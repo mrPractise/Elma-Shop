@@ -1,0 +1,38 @@
+[
+  {
+    "model": "Shop.category",
+    "pk": 1,
+    "fields": {
+      "name": "Homedecor",
+      "slug": "Homedecor",
+      "description": "Stylish home decor items"
+    }
+  },
+  {
+    "model": "Shop.category",
+    "pk": 2,
+    "fields": {
+      "name": "Beauty-Products",
+      "slug": "Beauty-Products",
+      "description": "Premium beauty products"
+    }
+  },
+  {
+    "model": "Shop.category",
+    "pk": 3,
+    "fields": {
+      "name": "Jewelry",
+      "slug": "Jewelry",
+      "description": "Exquisite jewelry collection"
+    }
+  },
+  {
+    "model": "Shop.category",
+    "pk": 4,
+    "fields": {
+      "name": "Dresses",
+      "slug": "Dresses",
+      "description": "Elegant dresses for all occasions"
+    }
+  }
+]

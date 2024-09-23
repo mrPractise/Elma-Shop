@@ -1,0 +1,60 @@
+{% load custom_filters %} {% load static %}
+
+
+{% for product in products %}
+<div class="product-item" data-product-id="{{ product.id }}" data-subcategory="{{ product.subcategory.slug|default:'all' }}">
+  <div class="product-image-container">
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy"/>
+  </div>
+  <div class="product-info">
+    <h3>{{ product.name }}</h3>
+    <div class="product-desc">
+      <p class="description">{{ product.short_description }}</p>
+      <a href="#" class="read-more">Read More</a>
+    </div>
+    <div class="product-price" data-unit-price="{{ product.price }}">
+      Ksh.{{ product.price }}
+    </div>
+    <div class="product-cart">
+      <button class="cart-btn" data-product-id="{{ product.id }}">
+        Add to Cart
+      </button>
+      <span class="cart-quantity">{{ cart_quantities|get_item:product.id|default:"0" }}</span>
+      <button
+        class="remove-from-cart"
+        data-product-id="{{ product.id }}"
+        style="display: {% if cart_quantities|get_item:product.id %}inline-block{% else %}none{% endif %}"
+      >
+        Remove
+      </button>
+    </div>
+  </div>
+</div>
+{% endfor %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const readMoreLinks = document.querySelectorAll('.read-more');
+
+    readMoreLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productDesc = this.closest('.product-desc');
+            const shortDesc = productDesc.querySelector('.short-desc');
+            const fullDesc = productDesc.querySelector('.full-desc');
+
+            if (shortDesc.style.display !== 'none') {
+                shortDesc.style.display = 'none';
+                fullDesc.style.display = 'block';
+                this.textContent = 'Read Less';
+            } else {
+                shortDesc.style.display = 'block';
+                fullDesc.style.display = 'none';
+                this.textContent = 'Read More';
+            }
+        });
+    });
+});
+
+
+</script>
+

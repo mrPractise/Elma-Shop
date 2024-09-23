@@ -1,0 +1,36 @@
+{% load custom_filters %} {% load static %}
+{% load cache %}
+{% cache 600 featured_products %}
+
+{% for product in products %}
+<div class="product-item" data-product-id="{{ product.id }}" data-subcategory="{{ product.subcategory.slug|default:'all' }}">
+  <div class="product-image-container">
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy"/>
+  </div>
+  <div class="product-info">
+    <h3>{{ product.name }}</h3>
+    <div class="product-price" data-unit-price="{{ product.price }}">
+      Ksh.{{ product.price }}
+    </div>
+    <div class="product-cart">
+      <button class="cart-btn" data-product-id="{{ product.id }}">
+        Add to Cart
+      </button>
+      <span class="cart-quantity">{{ cart_quantities|get_item:product.id|default:"0" }}</span>
+      <button
+        class="remove-from-cart"
+        data-product-id="{{ product.id }}"
+        style="display: {% if cart_quantities|get_item:product.id %}inline-block{% else %}none{% endif %}"
+      >
+        Remove
+      </button>
+    </div>
+  </div>
+</div>
+{% empty %}
+<div class="no-product">
+  <p class="empty-cart-message">No products available at the moment.</p>
+</div>
+{% endfor %}
+
+{% endcache %}

@@ -1,0 +1,74 @@
+{% load custom_filters %} {% load static %}
+<style>
+
+}
+</style>
+
+{% for product in products %}
+<div class="product-item" data-product-id="{{ product.id }}" data-subcategory="{{ product.subcategory.slug|default:'all' }}">
+  <div class="product-image-container">
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy"/>
+  </div>
+  <div class="product-info">
+    <h3>{{ product.name }}</h3>
+  <div class="product-desc">
+  <p class="description"><span></span></p>
+  <a href="#" class="read-more">Read More</a>
+</div>
+
+    <div class="product-price" data-unit-price="{{ product.price }}">
+      Ksh.{{ product.price }}
+    </div>
+    <div class="product-cart">
+      <button class="cart-btn" data-product-id="{{ product.id }}">
+        Add to Cart
+      </button>
+      <span class="cart-quantity">{{ cart_quantities|get_item:product.id|default:"0" }}</span>
+      <button
+        class="remove-from-cart"
+        data-product-id="{{ product.id }}"
+        style="display: {% if cart_quantities|get_item:product.id %}inline-block{% else %}none{% endif %}"
+      >
+        Remove
+      </button>
+    </div>
+  </div>
+</div>
+{% endfor %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const productDescs = document.querySelectorAll('.product-desc');
+    const maxWords = 20;
+
+    productDescs.forEach(productDesc => {
+        const descriptionP = productDesc.querySelector('.description');
+        const descriptionSpan = descriptionP.querySelector('span');
+        const readMoreLink = productDesc.querySelector('.read-more');
+        const fullText = descriptionSpan.textContent;
+        
+        const words = fullText.split(' ');
+        if (words.length > maxWords) {
+            const truncatedText = words.slice(0, maxWords).join(' ') + '...';
+            descriptionSpan.textContent = truncatedText;
+            descriptionP.style.maxHeight = descriptionP.scrollHeight + 'px';
+            readMoreLink.style.display = 'inline';
+        } else {
+            readMoreLink.style.display = 'none';
+        }
+
+        readMoreLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (descriptionSpan.textContent === truncatedText) {
+                descriptionSpan.textContent = fullText;
+                descriptionP.style.maxHeight = descriptionP.scrollHeight + 'px';
+                this.textContent = 'Read Less';
+            } else {
+                descriptionSpan.textContent = truncatedText;
+                descriptionP.style.maxHeight = descriptionP.scrollHeight + 'px';
+                this.textContent = 'Read More';
+            }
+        });
+    });
+});
+</script>
+
