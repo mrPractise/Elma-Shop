@@ -1,0 +1,183 @@
+{% load static %}
+{% load custom_filters %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elma Shop - Dresses, Jewelry, Home Decor, and Beauty Products</title>
+    <meta
+      name="description"
+      content="Elma Shop: Your one-stop shop for elegant dresses, exquisite jewelry, stylish home decor, and premium beauty products. Discover fashion and beauty for every occasion."
+    />
+    <meta
+      name="keywords"
+      content="Elma Shop, dresses, jewelry, home decor, beauty products, fashion, accessories"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.elmashop.com/" />
+    <meta
+      property="og:title"
+      content="Elma Shop - Fashion, Jewelry, Decor, and Beauty"
+    />
+    <meta
+      property="og:description"
+      content="Discover Elma Shop's collection of dresses, jewelry, home decor, and beauty products. Style for every occasion and home."
+    />
+    <meta
+      property="og:image"
+      content="{% static 'images/elma-shop-logo.jpg' %}"
+    />
+    <meta property="og:url" content="https://www.elmashop.com/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
+  <body>
+    {% include 'navbar.html' %}
+
+<main>
+<section id="home" class="hero-section">
+  <div class="hero-left">
+    {% for hero_image in hero_images|slice:":2" %}
+    <div class="hero-image-container">
+      <img
+        src="{{ hero_image.product.image.url|default:'static/images/placeholder.jpg' }}"
+        alt="{{ hero_image.category.name }} Hero Image"
+        class="hero-image"
+        loading="lazy"
+      />
+      <div class="hero-image-overlay">
+        <h3>{{ hero_image.category.name }}</h3>
+        {% if hero_image.product.short_description %}
+          <p>{{ hero_image.product.short_description }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="no-product">
+       <p class="empty-cart-message">No hero images available.</p>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="hero-right">
+    {% for hero_image in hero_images|slice:"2:4" %}
+    <div class="hero-image-container">
+      <img
+        src="{{ hero_image.product.image.url|default:'static/images/placeholder.jpg' }}"
+        alt="{{ hero_image.category.name }} Hero Image"
+        class="hero-image"
+        loading="lazy"
+      />
+      <div class="hero-image-overlay">
+        <h3>{{ hero_image.category.name }}</h3>
+        {% if hero_image.product.short_description %}
+          <p>{{ hero_image.product.short_description }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+  {% for category in featured_categories %}
+  <section id="{{ category.slug }}" class="section {{ category.slug }}-section">
+ 
+    <h2>{{ category.name }}</h2>
+
+    {% if category.slug == 'Beauty-Products' %}
+    <div class="beauty-container">
+          {% for featured in category.get_featured_products %}
+      <div class="beauty-masonry">
+    
+          <div class="beauty-item">
+            <img
+              src="{{ featured.product.get_image_url }}"
+              alt="{{ featured.product.name }} - Beauty Products"
+              loading="lazy"
+            />
+            <div class="beauty-overlay">
+              <h3>{{ featured.product.name }}</h3>
+              <p>{{ featured.product.description }}</p>
+            </div>
+          </div>
+       
+        
+      </div>
+       {% empty %}
+          <p class="empty-cart-message">No featured beauty products available at the moment.</p>
+      {% endfor %}
+    </div>
+
+
+
+
+    {% elif category.slug == 'Jewelry' %}
+    <div class="{{ category.slug }}-showcase">
+      {% for featured in category.get_featured_products %}
+      <div class="jewelry-item">
+        <div class="jewelry-image">
+          <img
+            src="{{ featured.product.image.url|default:'static/images/jewelry (1).jpg' }}"
+            alt="{{ featured.product.name }} - Jewelry"
+             loading="lazy"
+          />
+        </div>
+        <div class="jewelry-info">
+          <h3>{{ featured.product.name }}</h3>
+          <p>Ksh.{{ featured.product.price|intcomma }}</p>
+          <div class="jewelry-description">{{ featured.product.description }}</div>
+        </div>
+      </div>
+      {% empty %}
+        <p class="empty-cart-message">No featured jewelry products available at the moment.</p>
+      {% endfor %}
+    </div>
+
+    {% elif category.slug == 'Homedecor' %}
+    <div class="decor-grid">
+      {% for featured in category.get_featured_products %}
+      <div class="decor-item">
+        <img
+          src="{{ featured.product.image.url|default:'static/images/home-decor (1).jpg' }}"
+          alt="{{ featured.product.name }} - Home Decor"
+           loading="lazy"
+        />
+        <div class="decor-info">
+          <h3>{{ featured.product.name }}</h3>
+          <p>{{ featured.product.short_description }}</p>
+        </div>
+      </div>
+      {% empty %}
+        <p class="empty-cart-message">No featured home decor products available at the moment.</p>
+      {% endfor %}
+    </div>
+
+    {% elif category.slug == 'Dresses' %}
+    <div class="{{ category.slug }}-showcase">
+      {% for featured in category.get_featured_products %}
+      <div class="dress-category">
+        <img
+          src="{{ featured.product.image.url|default:'static/images/dress (1).jpg' }}"
+          alt="{{ featured.product.name }} Dresses"
+           loading="lazy"
+        />
+        <h3>{{ featured.product.name }}</h3>
+      </div>
+      {% empty %}
+        <p class="empty-cart-message">No featured dress products available at the moment.</p>
+      {% endfor %}
+    </div>
+
+    {% endif %}
+
+    <a href="{% url category.slug %}" class="see-more">Explore All {{ category.name }}</a>
+
+  </section>
+  {% endfor %}
+
+</main>
+    
+
+  </body>
+</html>

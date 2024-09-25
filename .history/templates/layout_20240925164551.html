@@ -1,0 +1,82 @@
+{% load static %} {% csrf_token %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
+  <body>
+    {% include "navbar.html" %}
+   
+<main class="page-container {{ current_category_slug }}-section">
+  <header class="page-header">
+    {% block page_header %}{% endblock %}
+  </header>
+
+  <div class="content-wrapper">
+    <aside class="sidebar">
+      <div class="items-page-categories-container">
+  
+        <div class="items-page-categories">
+          {% block items_categories %}
+          <button class="items-page-category active" data-subcategory="all">All</button>
+          {% for subcategory in subcategories %}
+          <button class="items-page-category" data-subcategory="{{ subcategory.slug }}">{{ subcategory.name }}</button>
+          {% endfor %}
+          {% endblock %}
+        </div>
+      </div>
+
+    </aside>
+
+    <div class="main-content">
+      <div class="product-header">
+        <span class="product-count">{{ products.count }} products</span>
+        <div class="sort-dropdown">
+          <select>
+            <option>Date, new to old</option>
+            <!-- Add other sorting options -->
+          </select>
+        </div>
+      </div>
+      <div class="product-grid">
+        {% block product_items %}
+        {% include 'product_grid.html' with products=products %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</main>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const subcategoryButtons = document.querySelectorAll('.items-page-category');
+  const productItems = document.querySelectorAll('.product-item');
+
+  subcategoryButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const subcategory = this.dataset.subcategory;
+
+      subcategoryButtons.forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+
+      productItems.forEach(item => {
+        if (subcategory === 'all' || item.dataset.subcategory === subcategory) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+});
+</script>
+
+
+    <script src="{% static 'javascript/script.js' %}"></script>
+  </body>
+</html>

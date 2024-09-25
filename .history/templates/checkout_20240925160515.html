@@ -1,0 +1,108 @@
+{% load humanize %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+
+<div class="checkout-container">
+    <h1>Checkout</h1>
+    <h2>Order Number: {{ order_number }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.name.label_tag }}
+        {{ form.name }}
+        
+<div id="location-selection">
+    {{ form.location.label_tag }}
+    <div class="location-options">
+        {% for radio in form.location %}
+            <div class="location-option">
+                <input type="radio" name="location" id="{{ radio.id_for_label }}" value="{{ radio.data.value }}" data-shipping-cost="{{ radio.data.instance.shipping_cost }}" {% if radio.data.selected %}checked{% endif %}>
+                <label for="{{ radio.id_for_label }}">
+                    {{ radio.choice_label }} (Shipping: Ksh.{{ radio.data.instance.shipping_cost|intcomma }})
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+        
+        <div id="custom-address-option">
+            {{ form.custom_address }} Use custom address
+        </div>
+        
+        <div id="custom-address-field" style="display: none;">
+            {{ form.address.label_tag }}
+            {{ form.address }}
+        </div>
+        
+        {% if form.errors %}
+            <div class="form-errors">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+
+        <h2>Order Summary</h2>
+        {% for item in cart_items %}
+            <div class="checkout-item">
+                <img src="{{ item.product.get_image_url }}" alt="{{ item.product.name }}" class="checkout-item-image">
+                <div class="checkout-item-details">
+                    <p>{{ item.product.name }}</p>
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <p>Price: Ksh.{{ item.product.price|intcomma }}</p>
+                    <p>Total: Ksh.{{ item.total_price|intcomma }}</p>
+                </div>
+            </div>
+        {% endfor %}
+        <p>Your orders will be placed to the Seller's Whatsapp Number</p>
+        <h3>Subtotal: Ksh.{{ subtotal|intcomma }}</h3>
+        <h3 id="shipping-cost">Shipping: Ksh.<span id="shipping-cost-value">{{ initial_shipping_cost|default:"0"|intcomma }}</span></h3>
+        <h3 id="total-cost">Total: Ksh.<span id="total-cost-value">{{ initial_total|default:subtotal|intcomma }}</span></h3>
+        <button type="submit">Confirm Order</button>
+    </form>
+</div>
+
+<script>
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const locationOptions = document.querySelectorAll('input[name="location"]');
+    const customAddressCheckbox = document.getElementById('id_custom_address');
+    const customAddressField = document.getElementById('custom-address-field');
+    const shippingCostDisplay = document.getElementById('shipping-cost-value');
+    const totalCostDisplay = document.getElementById('total-cost-value');
+    const subtotal = parseFloat('{{ subtotal }}'.replace(/,/g, ''));
+
+    function updateShippingCost() {
+        let shippingCost = 0;
+        for (const option of locationOptions) {
+            if (option.checked) {
+                shippingCost = parseFloat(option.getAttribute('data-shipping-cost') || 0);
+                break;
+            }
+        }
+        shippingCostDisplay.textContent = shippingCost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        const total = (subtotal + shippingCost).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        totalCostDisplay.textContent = total;
+    }
+
+    locationOptions.forEach(option => {
+        option.addEventListener('change', updateShippingCost);
+    });
+
+    customAddressCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            customAddressField.style.display = 'block';
+            locationOptions.forEach(option => {
+                option.checked = false;
+                option.disabled = true;
+            });
+        } else {
+            customAddressField.style.display = 'none';
+            locationOptions.forEach(option => {
+                option.disabled = false;
+            });
+        }
+        updateShippingCost();
+    });
+
+    updateShippingCost();
+});
+</script>
