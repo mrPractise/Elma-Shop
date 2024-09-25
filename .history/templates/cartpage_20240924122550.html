@@ -1,0 +1,55 @@
+{% load static %}
+{% load humanize %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+
+  </head>
+  <body>
+    {% include 'navbar.html' %}
+    <div class="cart-container">
+      <div class="cart-items">
+        <h1>Your Shopping Cart</h1>
+        {% if cart_items %} {% for item in cart_items %}
+        <div class="cart-item" data-product-id="{{ item.product.id }}">
+          <div class="item-content">
+            <img
+              src="{{ item.product.image.url }}"
+              alt="{{ item.product.name }}"
+              class="item-image"
+            />
+            <div class="item-details">
+              <div class="item-name">{{ item.product.name }}</div>
+              <div class="item-price">Ksh.{{ item.product.price|intcomma }}</div>
+              <div class="item-quantity">
+                <button
+                  class="quantity-btn"
+                  data-product-id="{{ item.product.id }}"
+                >
+                  -
+                </button>
+                <span>{{ item.quantity }}</span>
+                <button
+                  class="quantity-btn"
+                  data-product-id="{{ item.product.id }}"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <div class="item-total">Ksh.{{ item.total_price|intcomma }}</div>
+          </div>
+        </div>
+        {% endfor %} {% else %}
+        <p class="empty-cart-message">
+          Your cart is empty. Add some items to get started!
+        </p>
+        {% endif %}
+      </div>
+    </div>
+    <script src="{% static 'javascript/script.js' %}"></script>
+  </body>
+</html>
