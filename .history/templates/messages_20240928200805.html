@@ -1,0 +1,23 @@
+{% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+            <span class="message-icon">
+                {% if message.tags == 'success' %}
+                    &#10004; <!-- Checkmark -->
+                {% elif message.tags == 'error' %}
+                    &#10006; <!-- Cross -->
+                {% elif message.tags == 'warning' %}
+                    &#9888; <!-- Warning sign -->
+                {% else %}
+                    &#8505; <!-- Info sign -->
+                {% endif %}
+            </span>
+            <span class="message-content">{{ message }}</span>
+            <button class="message-close" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}

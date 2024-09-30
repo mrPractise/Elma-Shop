@@ -1,0 +1,77 @@
+{% load static %}
+{% load cart_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Navbar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+
+    <nav class="navbar">
+        <ul>
+            <li><a href="{% url 'home' %}" data-name="home">Home</a></li>
+            <li><a href="{% url 'Dresses' %}" data-name="dress">Dresses</a></li>
+            <li><a href="{% url 'Homedecor' %}" data-name="homedecor">Home Decor</a></li>
+            <li><a href="{% url 'Jewelry' %}" data-name="jewelry">Jewelry</a></li>
+            <li><a href="{% url 'Beauty-Products' %}" data-name="beauty">Beauty</a></li>
+     <li>
+            <a href="{% url 'cartpage' %}" data-name="cart" class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-counter">{{ request.session|cart_item_count }}</span>
+            </a>
+        </li>
+        </ul>
+    </nav>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get all navigation items
+            const navigationItems = document.querySelectorAll(".navbar ul li a");
+
+            // Function to set active item
+            function setActiveItem(item) {
+                navigationItems.forEach((navItem) => {
+                    navItem.classList.remove("active");
+                });
+                item.classList.add("active");
+                localStorage.setItem("activeNavItem", item.getAttribute("data-name"));
+            }
+
+            // Set active item on page load
+            const activeItemName = localStorage.getItem("activeNavItem");
+            if (activeItemName) {
+                const activeItem = document.querySelector(
+                    `[data-name="${activeItemName}"]`
+                );
+                if (activeItem) {
+                    setActiveItem(activeItem);
+                }
+            }
+
+            // Add click event listener to each navigation item
+            navigationItems.forEach((item) => {
+                item.addEventListener("click", function (event) {
+                    setActiveItem(event.target);
+                });
+            });
+        });
+
+           // Set initial cart count
+    const initialCartCount = {{ request.session|cart_item_count }};
+    updateCartCounter(initialCartCount);
+
+    function updateCartCounter(itemCount) {
+        const cartCounter = document.querySelector(".cart-counter");
+        if (cartCounter) {
+            cartCounter.textContent = itemCount;
+            cartCounter.style.display = itemCount > 0 ? "block" : "none";
+        }
+    }
+    </script>
+</body>
+</html>

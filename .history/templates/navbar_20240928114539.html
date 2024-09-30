@@ -1,0 +1,87 @@
+{% load static %}
+{% load cart_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Navbar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+
+<nav class="navbar">
+    <ul>
+        <li><a href="{% url 'home' %}" data-name="home">Home</a></li>
+        <li><a href="{% url 'Dresses' %}" data-name="dress">Dresses</a></li>
+        <li><a href="{% url 'Homedecor' %}" data-name="homedecor">Home Decor</a></li>
+            <li>
+            <a href="#" id="search-icon" class="search-icon">
+                <i class="fas fa-search"></i>
+            </a>
+        </li>
+        <li><a href="{% url 'Jewelry' %}" data-name="jewelry">Jewelry</a></li>
+        <li><a href="{% url 'Beauty-Products' %}" data-name="beauty">Beauty</a></li>
+        <li>
+            <a href="{% url 'cartpage' %}" data-name="cart" class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-counter">{{ request.session|cart_item_count }}</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!-- Search Modal -->
+<div id="search-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Search Products</h2>
+        <form action="{% url 'search_products' %}" method="get" class="search-form">
+            <input type="text" name="q" placeholder="Search products..." required>
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+</div>
+
+     <script src="{% static 'js/navbar.js' %}"></script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Set initial cart count
+            const initialCartCount = {{ request.session|cart_item_count }};
+            updateCartCounter(initialCartCount);
+
+            function updateCartCounter(itemCount) {
+                const cartCounter = document.querySelector(".cart-counter");
+                if (cartCounter) {
+                    cartCounter.textContent = itemCount;
+                    cartCounter.style.display = itemCount > 0 ? "block" : "none";
+                }
+            }
+
+            // Search modal functionality
+            var searchIcon = document.getElementById('search-icon');
+            var searchModal = document.getElementById('search-modal');
+            var closeBtn = searchModal.querySelector('.close');
+
+            searchIcon.addEventListener('click', function(e) {
+                e.preventDefault();
+                searchModal.style.display = 'block';
+            });
+
+            closeBtn.addEventListener('click', function() {
+                searchModal.style.display = 'none';
+            });
+
+            window.addEventListener('click', function(e) {
+                if (e.target == searchModal) {
+                    searchModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

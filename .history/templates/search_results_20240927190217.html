@@ -1,0 +1,40 @@
+
+{% load static %}
+
+<div class="search-results">
+    <h2>Search Results for "{{ query }}"</h2>
+    
+    {% if page_obj %}
+        <div class="product-grid">
+            {% for product in page_obj %}
+                <div class="product-item">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.short_description }}</p>
+                    <p class="price">Ksh.{{ product.price }}</p>
+                    <button class="cart-btn" data-product-id="{{ product.id }}">Add to Cart</button>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?q={{ query }}&page=1">&laquo; first</a>
+                    <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    {% else %}
+        <p>No products found matching your search.</p>
+    {% endif %}
+</div>
