@@ -14,6 +14,8 @@ ALLOWED_HOSTS = ['localhost','127.0.0.1','elmashop.up.railway.app']
 
 CSRF_TRUSTED_ORIGINS = ['https://elmashop.up.railway.app']
 
+if not CSRF_TRUSTED_ORIGINS:
+    raise ValueError("CSRF_TRUSTED_ORIGINS must not be empty")
 
 # Application definition
 INSTALLED_APPS = [
