@@ -1,7 +1,11 @@
 import os
 from pathlib import Path
 import dj_database_url
+import logging
 
+   # Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -69,11 +73,35 @@ CACHES = {
         'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
     }
 }
-DATABASE_URL="postgresql://postgres:UyGNjvfDubYTYcdmYvNvJXeVsllKWDBm@autorack.proxy.rlwy.net:12599/railway"
+
 # Database
-DATABASES ={
-    'default':dj_database_url.config(default=DATABASE_URL, conn_max_age=1800),
-}
+# Database
+DATABASE_URL = os.environ.get('DATABASE_URL')
+logger.info(f"DATABASE_URL: {'Set' if DATABASE_URL else 'Not set'}")
+
+if DATABASE_URL:
+    logger.info("Using DATABASE_URL for database configuration")
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+else:
+    logger.warning("DATABASE_URL not found, using fallback configuration")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('PGDATABASE', 'railway'),
+            'USER': os.environ.get('PGUSER', 'postgres'),
+            'PASSWORD': os.environ.get('PGPASSWORD', ''),
+            'HOST': os.environ.get('PGHOST'),
+            'PORT': os.environ.get('PGPORT', '5432'),
+        }
+    }
+
+logger.info(f"Database configuration: {DATABASES['default']}")
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
