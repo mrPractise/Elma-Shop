@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'railway',
         'USER': 'postgres',
         'PASSWORD': os.environ.get('PGPASSWORD'),
-        'HOST': 'postgresql://postgres:UyGNjvfDubYTYcdmYvNvJXeVsllKWDBm@autorack.proxy.rlwy.net:12599/railway',  # Replace with actual host
+        'HOST': 'postgres.railway.internal',  # Replace with actual host
         'PORT': '5432',
     }
 }
