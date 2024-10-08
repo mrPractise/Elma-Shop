@@ -76,14 +76,12 @@ CACHES = {
 
 DATABASES = {
     'default': dj_database_url.config(
+        default='postgres://postgres:jUjvtSDqZfSUmHUjEtohaCvjqzEIsYLy@postgres.railway.internal:5432/railway',
         conn_max_age=600,
-        ssl_require=True,
-        default=f'postgres://{os.environ.get("PGUSER")}'
-                f':{os.environ.get("PGPASSWORD")}'
-                f'@//{os.environ.get("PGHOST")}:{os.environ.get("PGPORT")}'
-                f'/railway'
+        ssl_require=True
     )
 }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
