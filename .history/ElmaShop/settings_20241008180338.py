@@ -12,7 +12,7 @@ if not SECRET_KEY:
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['elmashop.up.railway.app','https://elmashop.up.railway.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'elmashop.up.railway.app','https://elmashop.up.railway.app']
 
 CSRF_TRUSTED_ORIGINS = ['https://elmashop.up.railway.app']
 
@@ -69,18 +69,12 @@ CACHES = {
         'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
     }
 }
-
+DATABASE_URL="postgresql://postgres:UyGNjvfDubYTYcdmYvNvJXeVsllKWDBm@autorack.proxy.rlwy.net:12599/railway"
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway', 
-        'USER': 'postgres',
-        'PASSWORD': os.environ['ESPASSWORD'],
-        'HOST': 'postgres.railway.internal', 
-        'PORT': '5432',
-    }
+DATABASES ={
+    'default':dj_database_url.config(default=DATABASE_URL, conn_max_age=1800),
 }
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
