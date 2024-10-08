@@ -75,34 +75,32 @@ CACHES = {
 }
 
 # Database
-# Database
 DATABASE_URL = os.environ.get('DATABASE_URL')
-logger.info(f"DATABASE_URL: {'Set' if DATABASE_URL else 'Not set'}")
+    logger.info(f"DATABASE_URL: {'Set' if DATABASE_URL else 'Not set'}")
 
-if DATABASE_URL:
-    logger.info("Using DATABASE_URL for database configuration")
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
-else:
-    logger.warning("DATABASE_URL not found, using fallback configuration")
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('PGDATABASE', 'railway'),
-            'USER': os.environ.get('PGUSER', 'postgres'),
-            'PASSWORD': os.environ.get('PGPASSWORD', ''),
-            'HOST': os.environ.get('PGHOST', 'localhost'),
-            'PORT': os.environ.get('PGPORT', '5432'),
-        }
-    }
+   if DATABASE_URL:
+       logger.info("Using DATABASE_URL for database configuration")
+       DATABASES = {
+           'default': dj_database_url.config(
+               default=DATABASE_URL,
+               conn_max_age=600,
+               ssl_require=True
+           )
+       }
+   else:
+       logger.warning("DATABASE_URL not found, using fallback configuration")
+       DATABASES = {
+           'default': {
+               'ENGINE': 'django.db.backends.postgresql',
+               'NAME': os.environ.get('PGDATABASE', 'railway'),
+               'USER': os.environ.get('PGUSER', 'postgres'),
+               'PASSWORD': os.environ.get('PGPASSWORD', ''),
+               'HOST': os.environ.get('PGHOST', 'localhost'),
+               'PORT': os.environ.get('PGPORT', '5432'),
+           }
+       }
 
-logger.info(f"Database configuration: {DATABASES['default']}")
-
+   logger.info(f"Database configuration: {DATABASES['default']}")
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
