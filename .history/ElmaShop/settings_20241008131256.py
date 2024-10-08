@@ -76,7 +76,7 @@ CACHES = {
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgres://postgres:jUjvtSDqZfSUmHUjEtohaCvjqzEIsYLy@postgres.railway.internal:5432/railway',
+        default=os.environ.get('DATABASE_URL'),
         conn_max_age=600,
         ssl_require=True
     )
