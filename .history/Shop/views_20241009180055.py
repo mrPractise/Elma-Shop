@@ -301,35 +301,28 @@ def thank_you(request):
     order_details += f"Shipping Cost: Ksh.{format_price(pending_order['shipping_cost'])}\n"
     order_details += f"Total Order Amount: Ksh.{format_price(pending_order['total_amount'])}"
 
-    # Humanize prices in items and prepare image URLs
+    # Humanize prices in items
     for item in pending_order['items']:
-        # Ensure all prices and totals are formatted
         item['price'] = format_price(item['price'])
         item['total'] = format_price(Decimal(item['price'].replace(',', '')) * int(item['quantity']))
 
-        # Check and prepare the image URL
-        if 'image_url' in item:
-            # Ensure image_url is absolute
-            item['image_url'] = request.build_absolute_uri(item['image_url'])
-            print(f"Image URL for {item['product_name']}: {item['image_url']}")  # Log for debugging
-
     # Generate the order PDF
-    pdf_filename = generate_order_pdf(order_details, pending_order['items'])
-
+    pdf_filename, pdf_url = generate_order_pdf(order_details, pending_order['items'])
+    
     # Get the full URL for the PDF
-    pdf_url = request.build_absolute_uri(settings.MEDIA_URL + 'order_pdfs/' + pdf_filename)
+    full_pdf_url = request.build_absolute_uri(pdf_url)
 
     # Prepare the WhatsApp message with the PDF link
-    whatsapp_message = f"New order placed.\nView order details: \n{pdf_url}"
+    whatsapp_message = f"New order placed.\nView order details: \n{full_pdf_url}"
 
     context = {
         'order': pending_order,
         'whatsapp_message': whatsapp_message,
-        'whatsapp_number': settings.WHATSAPP_NUMBER
+        'whatsapp_number': settings.WHATSAPP_NUMBER,
+        'pdf_url': full_pdf_url  # Add this to the context
     }
+
     return render(request, 'thankyou.html', context)
-
-
 
 
 def clear_cart(request):

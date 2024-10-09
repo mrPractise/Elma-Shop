@@ -59,19 +59,13 @@ def generate_order_pdf(order_details, items):
 
         # Try to add the image
         try:
-            print(f"Fetching image from URL: {item['image_url']}")  # Log the image URL
             response = requests.get(item['image_url'], timeout=10)
-            if response.status_code == 200:  # Check if the request was successful
-                img = Image(BytesIO(response.content), width=1.5 * inch, height=1.5 * inch)
-                data[0][1] = img
-            else:
-                data[0][1] = Paragraph("Image not available", normal_style)  # Handle HTTP errors
-        except Exception as e:
-            print(f"Error fetching image: {e}")  # Log errors
+            img = Image(BytesIO(response.content), width=1.5*inch, height=1.5*inch)
+            data[0][1] = img
+        except:
             data[0][1] = Paragraph("Image not available", normal_style)
 
-        # Create the table and add it to elements
-        t = Table(data, colWidths=[4 * inch, 2 * inch])
+        t = Table(data, colWidths=[4*inch, 2*inch])
         t.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, -1), colors.white),
             ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
@@ -83,8 +77,7 @@ def generate_order_pdf(order_details, items):
             ('GRID', (0, 0), (-1, -1), 1, colors.black)
         ]))
         elements.append(t)
-        elements.append(Spacer(1, 0.25 * inch))
-
+        elements.append(Spacer(1, 0.25*inch))
 
     # Build the PDF
     doc.build(elements)
