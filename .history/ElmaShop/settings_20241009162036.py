@@ -12,12 +12,13 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 if not SECRET_KEY:
     raise ValueError("DJANGO_SECRET_KEY must be set")
 
-DEBUG = False
+DEBUG = True
 
 if DEBUG:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://127.0.0.1']
 else:
-    ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = ['elmashop.up.railway.app','https://elmashop.up.railway.app']
     CSRF_TRUSTED_ORIGINS = ['https://elmashop.up.railway.app']
 
 # Application definition

@@ -11,14 +11,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 if not SECRET_KEY:
     raise ValueError("DJANGO_SECRET_KEY must be set")
-
-DEBUG = False
+DEBUG = True
 
 if DEBUG:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://127.0.0.1']
 else:
-    ALLOWED_HOSTS = ['*']
-    CSRF_TRUSTED_ORIGINS = ['https://elmashop.up.railway.app']
+    ALLOWED_HOSTS = ['elmashop.up.railway.app', 'www.elmashop.up.railway.app']
+    CSRF_TRUSTED_ORIGINS = ['https://elmashop.up.railway.app', 'http://elmashop.up.railway.app']
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -120,18 +121,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Security settings
 if not DEBUG:
-    SECURE_SSL_REDIRECT = False
+    SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
-    # Additional security headers
     SECURE_HSTS_SECONDS = 31536000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
 
-
 # WhatsApp settings
 WHATSAPP_NUMBER = os.environ.get('WHATSAPP_NUMBER')
 WHATSAPP_MESSAGE = os.environ.get('WHATSAPP_MESSAGE', "Hello! I'm interested in ordering from your shop. Can you please provide me with information about available items?")
+
+
 
