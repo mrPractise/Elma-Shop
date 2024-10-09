@@ -117,9 +117,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-# Use Railway's volume for media storage
-if os.environ.get('RAILWAY_VOLUME_MOUNT_PATH'):
-    MEDIA_ROOT = os.environ.get('RAILWAY_VOLUME_MOUNT_PATH')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
