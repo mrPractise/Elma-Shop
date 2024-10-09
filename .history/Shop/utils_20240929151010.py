@@ -9,15 +9,6 @@ from io import BytesIO
 import os
 import uuid
 from django.conf import settings
-from PIL import Image as PILImage
-from reportlab.lib import colors
-from reportlab.lib.utils import ImageReader
-from requests.exceptions import RequestException
-import logging
-
-logger = logging.getLogger(__name__)
-
-
 
 
 def get_cart_quantities(request):
@@ -34,46 +25,44 @@ def get_cart_quantities(request):
 
 
 def generate_order_pdf(order_details, items):
+    # Generate a unique filename
     filename = f"order_{uuid.uuid4()}.pdf"
     filepath = os.path.join(settings.MEDIA_ROOT, 'order_pdfs', filename)
     
+    # Ensure the directory exists
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
 
+    # Create the PDF document
     doc = SimpleDocTemplate(filepath, pagesize=letter)
     elements = []
 
+    # Styles
     styles = getSampleStyleSheet()
     title_style = styles['Heading1']
     normal_style = styles['Normal']
 
+    # Add order details
     elements.append(Paragraph("Order Details", title_style))
     for line in order_details.split('\n'):
         elements.append(Paragraph(line, normal_style))
     elements.append(Spacer(1, 0.25*inch))
 
+    # Add items
     elements.append(Paragraph("Order Items", title_style))
     for item in items:
+        # Create a table for each item
         data = [
             [Paragraph(f"<b>{item['product_name']}</b>", normal_style), ''],
             [f"Quantity: {item['quantity']}", f"Price: Ksh.{item['price']}"],
             [f"Total: Ksh.{item['total']}", '']
         ]
 
+        # Try to add the image
         try:
-            response = requests.get(item['image_url'], timeout=15, verify=True)
-            response.raise_for_status()
-            img_data = BytesIO(response.content)
-            
-            with PILImage.open(img_data) as img:
-                img = img.convert('RGB')
-                img_io = BytesIO()
-                img.save(img_io, 'JPEG')
-                img_io.seek(0)
-            
-            img = Image(ImageReader(img_io), width=1.5*inch, height=1.5*inch)
+            response = requests.get(item['image_url'], timeout=10)
+            img = Image(BytesIO(response.content), width=1.5*inch, height=1.5*inch)
             data[0][1] = img
-        except Exception as e:
-            logger.error(f"Error loading image for {item['product_name']}: {str(e)}")
+        except:
             data[0][1] = Paragraph("Image not available", normal_style)
 
         t = Table(data, colWidths=[4*inch, 2*inch])
@@ -90,6 +79,7 @@ def generate_order_pdf(order_details, items):
         elements.append(t)
         elements.append(Spacer(1, 0.25*inch))
 
+    # Build the PDF
     doc.build(elements)
 
     return filename
