@@ -17,7 +17,7 @@ DEBUG = True
 if DEBUG:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 else:
-    ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = ['shopwitheca.com','https://shopwitheca.com','elmashop.up.railway.app']
     CSRF_TRUSTED_ORIGINS = ['https://shopwitheca.com','https://elmashop.up.railway.app']
 
 # Application definition
