@@ -251,20 +251,23 @@ class PurchaseOrder(models.Model):
     def generate_order_number(cls):
         now = timezone.now()
         day_abbr = now.strftime("%a")  # Mon, Tue, Wed, etc.
-        date_string = now.strftime("%d/%m")  # DD/MM format
+        date_string = now.strftime("%d/%m/%Y")
         
-        def generate_random_string():
-            # Generate a random string of 5 characters (uppercase letters and digits)
-            characters = string.ascii_uppercase + string.digits
-            return ''.join(random.choice(characters) for _ in range(5))
+        # Get the next sequence number for today
+        new_sequence = OrderSequence.get_next_sequence(now.date())
+
+        # Ensure the sequence is 5 digits
+        sequence_str = f"{new_sequence:05d}"
+
+        order_number = f"{day_abbr}-{sequence_str}-{date_string}"
         
-        # Generate the random part and check for uniqueness
-        while True:
-            random_part = generate_random_string()
-            order_number = f"{day_abbr}-{random_part}-{date_string}"
-            
-            if not cls.objects.filter(order_number=order_number).exists():
-                return order_number
+        # Ensure the generated order number is unique
+        while cls.objects.filter(order_number=order_number).exists():
+            new_sequence = OrderSequence.get_next_sequence(now.date())
+            sequence_str = f"{new_sequence:05d}"
+            order_number = f"{day_abbr}-{sequence_str}-{date_string}"
+        
+        return order_number
 
     def __str__(self):
         return f"Order {self.order_number}"
