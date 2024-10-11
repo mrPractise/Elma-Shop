@@ -4,7 +4,8 @@
 
 <div class="checkout-container">
     <h1>Checkout</h1>
-
+   
+    <h2>Order Number: {{ order_number }}</h2>
     <form method="post"id="checkout-form">
         {% csrf_token %}
         {{ form.name.label_tag }}
