@@ -10,10 +10,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DJANGO_SECRET_KEY="gb+5wx62nt8ibns)nbjxtk#g1nn6hk1zz8*#1!o2r)h#(ae^g6"
 
-DEBUG = False
+DEBUG = True
 
 if DEBUG:
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+    ALLOWED_HOSTS = ['*']
 else:    
     ALLOWED_HOSTS = ['shopwitheca.com','elmashop.up.railway.app']
     CSRF_TRUSTED_ORIGINS = ['https://shopwitheca.com','https://elmashop.up.railway.app']
@@ -119,15 +119,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Security settings
-if not DEBUG:
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    # Additional security headers
-    SECURE_HSTS_SECONDS = 31536000  # 1 year
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
