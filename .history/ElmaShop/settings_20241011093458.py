@@ -4,7 +4,7 @@ import dj_database_url
 
 
 
-
+print("DATABASE_URL:", os.environ.get('DATABASE_URL'))
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -91,9 +91,7 @@ else:
         }
     }
 
-import os
-print("DATABASE_URL:", os.environ.get('DATABASE_URL'))
-print("DJANGO_SETTINGS_MODULE:", os.environ.get('DJANGO_SETTINGS_MODULE'))
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
