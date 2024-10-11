@@ -8,7 +8,9 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DJANGO_SECRET_KEY="gb+5wx62nt8ibns)nbjxtk#g1nn6hk1zz8*#1!o2r)h#(ae^g6"
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    raise ValueError("DJANGO_SECRET_KEY must be set")
 
 DEBUG = False
 
@@ -91,6 +93,7 @@ else:
 
 
 print("DATABASE_URL:", os.environ.get('DATABASE_URL'))
+print("DJANGO_SETTINGS_MODULE:", os.environ.get('DJANGO_SETTINGS_MODULE'))
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
