@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DJANGO_SECRET_KEY="gb+5wx62nt8ibns)nbjxtk#g1nn6hk1zz8*#1!o2r)h#(ae^g6"
 
-DEBUG = False
+DEBUG = True
 
 
 ALLOWED_HOSTS = ['shopwitheca.com','elmashop.up.railway.app']
@@ -124,7 +124,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Security settings
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    SECURE_SSL_REDIRECT = False
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
