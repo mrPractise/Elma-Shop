@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
-DEBUG = os.environ.get('DEBUG', 'False') == 'False'
+DEBUG = False
 
 ALLOWED_HOSTS = ['shopwitheca.com','elmashop.up.railway.app']
 CSRF_TRUSTED_ORIGINS = ['https://shopwitheca.com','https://elmashop.up.railway.app']
