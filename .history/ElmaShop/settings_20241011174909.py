@@ -11,9 +11,7 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'False'
 
 ALLOWED_HOSTS = ['shopwitheca.com','elmashop.up.railway.app']
 CSRF_TRUSTED_ORIGINS = ['https://shopwitheca.com','https://elmashop.up.railway.app']
-
 BASE_URL = 'https://shopwitheca.com'  # Replace with your actual base URL
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
