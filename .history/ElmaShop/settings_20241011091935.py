@@ -77,7 +77,7 @@ CACHES = {
 }
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:xmXJqiqBquMuYTfxtaYopndINEiEMuhM@autorack.proxy.rlwy.net:42205/railway',
+        default='postgresql://postgres:xLpfzJAMSUmGBfLgMPXKIqdDmhhMqihI@postgres.railway.internal:5432/railway',
         conn_max_age=600,
         conn_health_checks=True,
         ssl_require=True,
