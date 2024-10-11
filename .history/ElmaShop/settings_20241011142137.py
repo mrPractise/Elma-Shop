@@ -12,11 +12,9 @@ DJANGO_SECRET_KEY="gb+5wx62nt8ibns)nbjxtk#g1nn6hk1zz8*#1!o2r)h#(ae^g6"
 
 DEBUG = True
 
-if DEBUG:
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-else:    
-    ALLOWED_HOSTS = ['shopwitheca.com','elmashop.up.railway.app']
-    CSRF_TRUSTED_ORIGINS = ['https://shopwitheca.com','https://elmashop.up.railway.app']
+
+ALLOWED_HOSTS = ['shopwitheca.com','elmashop.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://shopwitheca.com','https://elmashop.up.railway.app']
 
 # Application definition
 INSTALLED_APPS = [
@@ -126,6 +124,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Security settings
 if not DEBUG:
+    SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
