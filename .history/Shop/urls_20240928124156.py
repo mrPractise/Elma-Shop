@@ -1,16 +1,8 @@
 from django.urls import path
 from Shop import views
-from django.contrib.sitemaps.views import sitemap
-from Shop.sitemaps import StaticViewSitemap, CategorySitemap, ProductSitemap
 
-sitemaps = {
-    'static': StaticViewSitemap,
-    'categories': CategorySitemap,
-    'products': ProductSitemap,
-}
 
 urlpatterns = [
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('', views.home, name='home'),
     path('beauty/', views.beauty, name='Beauty-Products'),
     path('dress/', views.dress, name='Dresses'),
