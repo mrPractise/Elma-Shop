@@ -5,12 +5,9 @@
 
 
 <div class="product-item" data-product-id="{{ product.id }}" data-subcategory="{{ product.subcategory.slug|default:'all' }}">
-  <div class="dress-category">
+  <div class="product-image-container">
     <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy"/>
   </div>
-
-
-
   <div class="product-info">
     <h3>{{ product.name }}</h3>
     <div class="product-desc">
