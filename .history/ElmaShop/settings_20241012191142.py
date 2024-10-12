@@ -12,7 +12,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'False'
 
-ALLOWED_HOSTS = ['shopwitheca.com','elmashop.up.railway.app']
+ALLOWED_HOSTS = ['shopwitheca.com','https://shopwitheca.com','elmashop.up.railway.app']
 CSRF_TRUSTED_ORIGINS = ['https://shopwitheca.com','https://elmashop.up.railway.app']
 
 BASE_URL = 'https://shopwitheca.com'  # Replace with your actual base URL
@@ -41,7 +41,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'Shop.cache_control.cache_control_middleware',
-    'Shop.middleware.RemoveNoindexMiddleware',
 ]
 
 ROOT_URLCONF = 'ElmaShop.urls'
