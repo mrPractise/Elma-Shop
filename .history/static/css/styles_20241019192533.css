@@ -602,7 +602,6 @@ h2 {
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
 }
 
 .product-item img {
@@ -625,11 +624,11 @@ h2 {
 
 
 .product-desc {
-  font-size: 0.9rem;
-  line-height: 1.4;
-  margin: 0.5rem 0;
   flex-grow: 1;
 }
+
+
+
 
 
 
