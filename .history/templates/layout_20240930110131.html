@@ -33,10 +33,11 @@
     </aside>
 
 
-     
-
+      <div class="product-grid">
+        {% block product_items %}
         {% include 'product_grid.html' with products=products %}
-   
+        {% endblock %}
+      </div>
 
   </div>
 </main>
