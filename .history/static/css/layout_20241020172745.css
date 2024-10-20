@@ -127,7 +127,7 @@
   background-color: #3498db;
   color: #fff;
   flex-grow: 1;
-  margin-right: 0.3rem;
+  margin-right: 0.5rem;
 }
 
 .cart-btn:hover {
@@ -137,7 +137,6 @@
 .remove-from-cart {
   background-color: #e74c3c;
   color: #fff;
-  margin-left: 0.3rem;
 }
 
 .remove-from-cart:hover {
