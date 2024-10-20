@@ -578,21 +578,14 @@ h2 {
 .product-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px 10px; /* Horizontal gap only */
+  gap: 20px 20px; /* Horizontal gap only */
   align-items: start;
   margin: 0 20px;
   width: 100%;
 }
-
-@media (max-width: 700px) {
+@media (min-width: 1200px) {
   .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 701px) and (max-width: 1199px) {
-  .product-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
