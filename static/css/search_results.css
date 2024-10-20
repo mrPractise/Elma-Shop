@@ -1,0 +1,27 @@
+.search-results-container {
+  padding: 20px;
+}
+.search-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+.search-product-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+.search-product-image {
+  max-width: 100%;
+  height: auto;
+}
+.search-pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+.search-page-link {
+  margin: 0 5px;
+}
+.search-current-page {
+  font-weight: 700;
+}
