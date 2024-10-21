@@ -13,7 +13,7 @@ sitemaps = {
 urlpatterns = [
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name='robots_txt'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-    path('error_order/<str:order_number>/', views.error_order, name='error_order'),
+    path('error_pdf/<str:order_number>/', views.error_pdf_view, name='error_pdf'),
     path('', views.home, name='home'),
     path('beauty/', views.beauty, name='Beauty-Products'),
     path('dress/', views.dress, name='Dresses'),

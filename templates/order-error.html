@@ -1,0 +1,8 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/error.css' %}">
+<div class="error-container">
+    <h1>PDF Generation Error</h1>
+    <h2>There was an error placing your order: {{ order_number }}</h2>
+    <h2>Please Send your order number i.e {{order_number}} to +254796219600 via SMS/WHATSAPP</h2>
+    <p>We apologize for the inconvenience.</p>
+</div>
