@@ -225,73 +225,73 @@ def checkout(request):
             
             form = ShippingForm(request.POST)
             if form.is_valid():
-                name = form.cleaned_data['name']
-                location = form.cleaned_data['location']
-                custom_address = form.cleaned_data['custom_address']
-                address = form.cleaned_data['address'] if custom_address else location.name
+                            name = form.cleaned_data['name']
+            location = form.cleaned_data['location']
+            custom_address = form.cleaned_data['custom_address']
+            address = form.cleaned_data['address'] if custom_address else location.name
 
-                shipping_cost = location.shipping_cost if location and not custom_address else Decimal('0')
-                total = subtotal + shipping_cost
+            shipping_cost = location.shipping_cost if location and not custom_address else Decimal('0')
+            total = subtotal + shipping_cost
 
-                with transaction.atomic():
-                    # Create a PurchaseOrder instance
-                    order = PurchaseOrder.objects.create(
-                        name=name,
-                        address=address,
-                        total_amount=total,
-                        status='PENDING'
+            with transaction.atomic():
+                # Create a PurchaseOrder instance
+                order = PurchaseOrder.objects.create(
+                    name=name,
+                    address=address,
+                    total_amount=total,
+                    status='PENDING'
+                )
+
+                # Create PurchaseOrderItems
+                for item in cart_items:
+                    PurchaseOrderItem.objects.create(
+                        order=order,
+                        product=item.product,
+                        quantity=item.quantity,
+                        price=item.product.price
                     )
 
-                    # Create PurchaseOrderItems
-                    for item in cart_items:
-                        PurchaseOrderItem.objects.create(
-                            order=order,
-                            product=item.product,
-                            quantity=item.quantity,
-                            price=item.product.price
-                        )
+                # Store order details in session
+                request.session['pending_order'] = {
+                    'order_number': order.order_number,
+                    'name': name,
+                    'address': address,
+                    'total_amount': str(total),
+                    'items': [{
+                        'product_id': item.product.id,
+                        'product_name': item.product.name,
+                        'quantity': item.quantity,
+                        'price': str(item.product.price),
+                        'image_url': request.build_absolute_uri(item.product.get_image_url())
+                    } for item in cart_items],
+                    'subtotal': str(subtotal),
+                    'shipping_cost': str(shipping_cost)
+                }
 
-                    # Store order details in session
-                    request.session['pending_order'] = {
-                        'order_number': order.order_number,
-                        'name': name,
-                        'address': address,
-                        'total_amount': str(total),
-                        'items': [{
-                            'product_id': item.product.id,
-                            'product_name': item.product.name,
-                            'quantity': item.quantity,
-                            'price': str(item.product.price),
-                            'image_url': request.build_absolute_uri(item.product.get_image_url())
-                        } for item in cart_items],
-                        'subtotal': str(subtotal),
-                        'shipping_cost': str(shipping_cost)
-                    }
+                # Clear the cart
+                cart.items.all().delete()
+                cart.is_active = False
+                cart.save()
 
-                    # Clear the cart
-                    cart.items.all().delete()
-                    cart.is_active = False
-                    cart.save()
+            return redirect('thank_you')
+        else:
+            form = ShippingForm()
+            default_location = ShippingLocation.objects.first()
+            if default_location:
+                form.fields['location'].initial = default_location.id
+                initial_shipping_cost = default_location.shipping_cost
+                initial_total = subtotal + initial_shipping_cost
 
-                return redirect('thank_you')
-            else:
-                form = ShippingForm()
-                default_location = ShippingLocation.objects.first()
-                if default_location:
-                    form.fields['location'].initial = default_location.id
-                    initial_shipping_cost = default_location.shipping_cost
-                    initial_total = subtotal + initial_shipping_cost
-
-            context = {
-                'page': 'checkout',
-                'form': form,
-                'cart_items': cart_items,
-                'subtotal': subtotal,
-                'initial_shipping_cost': initial_shipping_cost,
-                'initial_total': initial_total,
-                'cart': cart,
-            }
-            return render(request, 'checkout.html', context)
+        context = {
+            'page': 'checkout',
+            'form': form,
+            'cart_items': cart_items,
+            'subtotal': subtotal,
+            'initial_shipping_cost': initial_shipping_cost,
+            'initial_total': initial_total,
+            'cart': cart,
+        }
+        return render(request, 'checkout.html', context)
     except Exception as e:
         return render(request, 'error.html', {'error_message': str(e)}, status=500)
 
