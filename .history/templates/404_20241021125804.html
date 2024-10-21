@@ -1,0 +1,16 @@
+
+{% block title %}Page Not Found{% endblock %}
+
+
+<div class="error-container">
+    <h1>404 - Page Not Found</h1>
+    <p>We're sorry, but the page you're looking for cannot be found.</p>
+    <p>Here are some helpful links:</p>
+    <ul>
+   <li><a href="{% url 'home' %}" data-name="home">Home</a></li>
+        <li><a href="{% url 'Dresses' %}" data-name="dress">Dresses</a></li>
+        <li><a href="{% url 'Homedecor' %}" data-name="homedecor">Home-Decor</a></li>
+        <li><a href="{% url 'Jewelry' %}" data-name="jewelry">Jewelry</a></li>
+        <li><a href="{% url 'Beauty-Products' %}" data-name="beauty">Beauty Products</a></li>
+    </ul>
+</div>
