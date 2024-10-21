@@ -29,13 +29,6 @@ from .models import Cart, CartItem, Product, Category, Subcategory, HeroImage, P
 from .forms import ShippingForm
 from .utils import get_cart_quantities, generate_order_pdf
 
-import logging
-
-# Create a logger for your app
-logger = logging.getLogger('Shop')
-
-
-
 # Constants
 CATEGORY_DRESSES = 'Dresses'
 CATEGORY_BEAUTY = 'Beauty-Products'
@@ -207,11 +200,12 @@ def cartpage(request):
         return render(request, 'error.html', {'error_message': str(e)}, status=500)
 
 
+
 def checkout(request):
     try:
         cart = get_or_create_cart(request)
         cart_items = cart.items.all().select_related('product')
-        
+
         subtotal = cart_items.aggregate(
             total=Sum(F('product__price') * F('quantity'))
         )['total'] or Decimal('0')
@@ -224,58 +218,58 @@ def checkout(request):
             if action == 'cancel':
                 clear_cart(request)
                 return redirect('home')
-            
+
             form = ShippingForm(request.POST)
             if form.is_valid():
-                name = form.cleaned_data['name']
-                location = form.cleaned_data['location']
-                custom_address = form.cleaned_data['custom_address']
-                address = form.cleaned_data['address'] if custom_address else location.name
+            name = form.cleaned_data['name']
+            location = form.cleaned_data['location']
+            custom_address = form.cleaned_data['custom_address']
+            address = form.cleaned_data['address'] if custom_address else location.name
 
-                shipping_cost = location.shipping_cost if location and not custom_address else Decimal('0')
-                total = subtotal + shipping_cost
+            shipping_cost = location.shipping_cost if location and not custom_address else Decimal('0')
+            total = subtotal + shipping_cost
 
-                with transaction.atomic():
-                    # Create a PurchaseOrder instance
-                    order = PurchaseOrder.objects.create(
-                        name=name,
-                        address=address,
-                        total_amount=total,
-                        status='PENDING'
+            with transaction.atomic():
+                # Create a PurchaseOrder instance
+                order = PurchaseOrder.objects.create(
+                    name=name,
+                    address=address,
+                    total_amount=total,
+                    status='PENDING'
+                )
+
+                # Create PurchaseOrderItems
+                for item in cart_items:
+                    PurchaseOrderItem.objects.create(
+                        order=order,
+                        product=item.product,
+                        quantity=item.quantity,
+                        price=item.product.price
                     )
 
-                    # Create PurchaseOrderItems
-                    for item in cart_items:
-                        PurchaseOrderItem.objects.create(
-                            order=order,
-                            product=item.product,
-                            quantity=item.quantity,
-                            price=item.product.price
-                        )
+                # Store order details in session
+                request.session['pending_order'] = {
+                    'order_number': order.order_number,
+                    'name': name,
+                    'address': address,
+                    'total_amount': str(total),
+                    'items': [{
+                        'product_id': item.product.id,
+                        'product_name': item.product.name,
+                        'quantity': item.quantity,
+                        'price': str(item.product.price),
+                        'image_url': request.build_absolute_uri(item.product.get_image_url())
+                    } for item in cart_items],
+                    'subtotal': str(subtotal),
+                    'shipping_cost': str(shipping_cost)
+                }
 
-                    # Store order details in session
-                    request.session['pending_order'] = {
-                        'order_number': order.order_number,
-                        'name': name,
-                        'address': address,
-                        'total_amount': str(total),
-                        'items': [{
-                            'product_id': item.product.id,
-                            'product_name': item.product.name,
-                            'quantity': item.quantity,
-                            'price': str(item.product.price),
-                            'image_url': request.build_absolute_uri(item.product.get_image_url())
-                        } for item in cart_items],
-                        'subtotal': str(subtotal),
-                        'shipping_cost': str(shipping_cost)
-                    }
+                # Clear the cart
+                cart.items.all().delete()
+                cart.is_active = False
+                cart.save()
 
-                    # Clear the cart
-                    cart.items.all().delete()
-                    cart.is_active = False
-                    cart.save()
-
-                return redirect('thank_you')
+            return redirect('thank_you')
         else:
             form = ShippingForm()
             default_location = ShippingLocation.objects.first()
