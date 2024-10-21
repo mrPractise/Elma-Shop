@@ -33,8 +33,9 @@ from django.urls import reverse
 import logging
 
 # Create a logger for your app
+logger = logging.getLogger('Shop')
 
-logger = logging.getLogger(__name__)
+
 
 # Constants
 CATEGORY_DRESSES = 'Dresses'
@@ -300,7 +301,6 @@ def checkout(request):
 
 
 
-
 def thank_you(request):
     try:
         pending_order = request.session.get('pending_order')
@@ -323,29 +323,25 @@ def thank_you(request):
             item['quantity'] = cart_quantities.get(item['product_id'], item['quantity'])
 
         try:
-            pdf_filename, pdf_url = generate_order_pdf(order_details, pending_order['items'], order_number)
+            pdf_filename = generate_order_pdf(order_details, pending_order['items'], order_number)
             
-            if pdf_filename and pdf_url:
-                # Ensure the PDF directory exists
-                pdf_directory = 'order_pdfs'
-                os.makedirs(pdf_directory, exist_ok=True)
+            # Ensure the PDF directory exists
+            pdf_directory = 'order_pdfs'
+            os.makedirs(pdf_directory, exist_ok=True)
 
-                # Save the PDF to a specific location
-                pdf_path = f'{pdf_directory}/{pdf_filename}'
-                with open(pdf_filename, 'rb') as pdf_file:
-                    default_storage.save(pdf_path, pdf_file)
-                
-                # Generate a URL for accessing the PDF
-                pdf_url = request.build_absolute_uri(default_storage.url(pdf_path))
-                
-                # Optionally, delete the local file after saving to storage
-                try:
-                    os.remove(pdf_filename)
-                except OSError as e:
-                    logger.warning(f"Could not delete local PDF file {pdf_filename}: {str(e)}")
-            else:
-                logger.error(f"Failed to generate PDF for order {order_number}")
-                pdf_url = request.build_absolute_uri(reverse('error_order', kwargs={'order_number': order_number}))
+            # Save the PDF to a specific location
+            pdf_path = f'{pdf_directory}/{pdf_filename}'
+            with open(pdf_filename, 'rb') as pdf_file:
+                default_storage.save(pdf_path, pdf_file)
+            
+            # Generate a URL for accessing the PDF
+            pdf_url = request.build_absolute_uri(default_storage.url(pdf_path))
+            
+            # Optionally, delete the local file after saving to storage
+            try:
+                os.remove(pdf_filename)
+            except OSError as e:
+                logger.warning(f"Could not delete local PDF file {pdf_filename}: {str(e)}")
         except Exception as e:
             logger.error(f"Error generating PDF for order {order_number}: {str(e)}", exc_info=True)
             pdf_url = request.build_absolute_uri(reverse('error_order', kwargs={'order_number': order_number}))
@@ -367,6 +363,9 @@ def thank_you(request):
     except Exception as e:
         logger.error(f"Error in thank you view: {str(e)}", exc_info=True)
         return render(request, 'error.html', {'error_message': "An error occurred processing your order. Please contact support."}, status=500)
+
+
+
 
 
 
