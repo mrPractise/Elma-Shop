@@ -348,7 +348,6 @@ def thank_you(request):
     except Exception as e:
         logger.error(f"Error in thank you view: {str(e)}")
         return render(request, 'error.html', {'error_message': "An error occurred processing your order. Please contact support."}, status=500)
-
 def clear_cart(request):
     """Clear all items from the cart."""
     cart = get_or_create_cart(request)
