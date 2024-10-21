@@ -302,8 +302,6 @@ def checkout(request):
 
 
 
-
-
 def thank_you(request):
     try:
         pending_order = request.session.get('pending_order')
@@ -314,16 +312,9 @@ def thank_you(request):
         order_number = pending_order['order_number']
         order_details = f"New Order: {order_number}\n"
         order_details += f"Customer Details:\nName: {pending_order['name']}\nAddress: {pending_order['address']}\n"
-        order_details += f"Subtotal: Ksh.{pending_order['subtotal']}\n"
-        order_details += f"Shipping Cost: Ksh.{pending_order['shipping_cost']}\n"
-        order_details += f"Total Order Amount: Ksh.{pending_order['total_amount']}"
-
-        # Get cart quantities
-        cart_quantities = get_cart_quantities(request)
-
-        # Update items with quantities from cart
-        for item in pending_order['items']:
-            item['quantity'] = cart_quantities.get(item['id'], 1)  # Default to 1 if not found
+        order_details += f"Subtotal: Ksh.{format_price(pending_order['subtotal'])}\n"
+        order_details += f"Shipping Cost: Ksh.{format_price(pending_order['shipping_cost'])}\n"
+        order_details += f"Total Order Amount: Ksh.{format_price(pending_order['total_amount'])}"
 
         try:
             pdf_filename = generate_order_pdf(order_details, pending_order['items'], order_number)
@@ -366,6 +357,8 @@ def thank_you(request):
     except Exception as e:
         logger.error(f"Error in thank you view: {str(e)}", exc_info=True)
         return render(request, 'error.html', {'error_message': "An error occurred processing your order. Please contact support."}, status=500)
+def format_price(price):
+    return intcomma(f"{Decimal(str(price)):.2f}")
 
 
 def clear_cart(request):
