@@ -12,10 +12,10 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+
 from django.conf import settings
 from urllib.parse import urljoin, quote
-from reportlab.lib.colors import yellow
-from reportlab.lib.units import inch
+
 from .models import Cart, CartItem
 
 # Create a logger for your app
@@ -74,19 +74,8 @@ def generate_order_pdf(order_details, items, order_number):
         title_style = styles['Heading1']
         normal_style = styles['Normal']
 
-        # Create a custom style for the total amount
-        total_style = ParagraphStyle(
-            'TotalStyle',
-            parent=normal_style,
-            fontSize=18,  # This is approximately 1.5rem
-            backColor=yellow,
-            borderPadding=(4, 4, 4, 4),  # Add some padding around the text
-        )
-
         elements.append(Paragraph(f"Order Details - {order_number}", title_style))
-        
-        # Add order details, excluding the total amount
-        for line in order_details.split('\n')[:-1]:  # Exclude the last line (total amount)
+        for line in order_details.split('\n'):
             elements.append(Paragraph(line, normal_style))
         elements.append(Spacer(1, 0.25*inch))
 
@@ -111,10 +100,13 @@ def generate_order_pdf(order_details, items, order_number):
             elements.append(t)
             elements.append(Spacer(1, 0.25 * inch))
 
-        # Add the total amount with the custom style
-        total_amount = order_details.split('\n')[-1]  # Get the last line (total amount)
-        elements.append(Paragraph(total_amount, total_style))
-
+        # Add the total amount section
+        total_amount = order_details.split('\n')[-1].split(':')[-1].strip()
+        total_paragraph = Paragraph(f"Total Order Amount: {total_amount}", 
+                                    ParagraphStyle(name='TotalAmount', parent=normal_style, backColor=colors.yellow))
+        elements.append(total_paragraph)
+        elements.append(Spacer(1, 0.25 * inch))
+        
         doc.build(elements)
 
         pdf_url = urljoin(settings.MEDIA_URL, f'order_pdfs/{filename}')
