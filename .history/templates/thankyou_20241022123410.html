@@ -34,10 +34,4 @@
 </div>
 
 
-<script>
-    // Pass Django variables to JavaScript
-    const pdfUrl = '{{ pdf_url|escapejs }}';
-    const phoneNumber = '{{ whatsapp_number|escapejs }}';
-    const message = '{{ whatsapp_message|escapejs }}';
-</script>
-<script src="{% static 'javascript/thankyou.min.js' %}"></script>
+ <script src="{% static 'javascript/thankyou.min.js' %}"></script>
